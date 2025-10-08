@@ -1,0 +1,24 @@
+{
+  "name": "ports",
+  "module": "index.tsx",
+  "devDependencies": {
+    "@types/bun": "latest",
+    "@types/react": "^19.2.1"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "private": true,
+  "scripts": {
+    "start": "bun run index.tsx",
+    "test": "bun run test-scanner.ts"
+  },
+  "type": "module",
+  "dependencies": {
+    "chalk": "^5.6.2",
+    "ink": "^6.3.1",
+    "ink-select-input": "^6.2.0",
+    "ink-text-input": "^6.0.0",
+    "react": "^19.2.0"
+  }
+}

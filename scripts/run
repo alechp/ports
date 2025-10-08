@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+# Port & URL Scanner TUI Runner
+# This script runs the Port & URL Scanner TUI application
+
+# Resolve the real path of this script (follow symlinks)
+SOURCE="${BASH_SOURCE[0]}"
+while [ -h "$SOURCE" ]; do
+  DIR="$(cd -P "$(dirname "$SOURCE")" && pwd)"
+  SOURCE="$(readlink "$SOURCE")"
+  [[ $SOURCE != /* ]] && SOURCE="$DIR/$SOURCE"
+done
+SCRIPT_DIR="$(cd -P "$(dirname "$SOURCE")" && pwd)"
+PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
+
+# Change to the project directory and run
+cd "$PROJECT_DIR" && exec bun "$PROJECT_DIR/index.tsx"
