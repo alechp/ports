@@ -1,54 +1,109 @@
-# Port & URL Scanner TUI
+# Port & URL Scanner CLI
 
-A Terminal User Interface (TUI) application built with Bun, React, and Ink that scans all projects in `../../yapture/*` and `../../studio/*` directories to extract and display:
-
-- Ports being used
-- Purpose of each port
-- All URLs referenced
-- Source files where ports/URLs are found
+A powerful CLI tool built with Bun, React, and Ink for scanning and managing ports and URLs across your projects.
 
 ## Features
 
-- 📊 **Table Layout**: Clean table-based view showing all projects with expandable details
-- 🔍 **Smart Search**: Filter projects by name, port number, port purpose, or URL
-- 📝 **Expandable Rows**: Press Enter to expand and see all ports and URLs for each project
-- 🖥️ **Viewport Management**: Auto-scrolling with height capping to prevent overflow
-- ⌨️ **Keyboard Navigation**: Fully keyboard-driven interface with vi-style keys
-- 🎨 **Color-Coded**: Easy to read with color-coded information
-- 📍 **Full Paths**: Shows complete file paths for each project
+- 🎨 **Interactive TUI**: Beautiful terminal interface for browsing ports and URLs
+- 🔍 **Smart Search**: Filter projects by name, port number, purpose, or URL
+- 📊 **Port Conflict Detection**: Generate reports of ports in use to avoid conflicts
+- 📁 **Directory Indexing**: Scan any directory for ports and URLs (with Claude Code integration)
+- ⚡ **Auto-Updates**: Upgrade to latest version with a single command
+- ⌨️ **Vim-style Navigation**: hjkl, gg, G, Ctrl+D/U and more
+- 📋 **Clipboard Integration**: Copy ports and URLs with `y`
+- 🌐 **Browser Integration**: Open ports/URLs directly in browser with Enter
+- 🎯 **Focused Mode**: Deep dive into individual projects
 
 ## Installation
 
+### One-Line Install (Recommended)
+
 ```bash
+curl -fsSL https://raw.githubusercontent.com/alechp/ports/master/install.sh | bash
+```
+
+### Using Bun
+
+```bash
+bun install -g github:alechp/ports
+```
+
+### From Source
+
+```bash
+git clone https://github.com/alechp/ports.git
+cd ports
 bun install
+bun link
 ```
 
-## Usage
+## Commands
 
-### Start the TUI
+### `ports` or `ports tui`
+
+Launch the interactive TUI to browse all ports and URLs.
 
 ```bash
-# Using the symlinked run script (recommended)
-./run
-
-# Using the script directly
-./scripts/run
-
-# Using bun
-bun start
-
-# Using bun directly
-bun index.tsx
+ports
+# or explicitly
+ports tui
 ```
 
-### Test the Scanner
+### `ports upgrade`
 
-To see raw output of scanned projects:
+Upgrade to the latest version from GitHub releases.
 
 ```bash
-bun test
-# or
-bun run test-scanner.ts
+ports upgrade
+```
+
+This command will:
+- Check for the latest release
+- Download and install it automatically
+- Show version comparison
+
+### `ports output`
+
+Generate a report of all ports in use across your projects. Perfect for avoiding port conflicts!
+
+```bash
+# Text format (default)
+ports output
+
+# JSON format
+ports output --format json
+
+# Markdown format (great for documentation)
+ports output --format markdown
+```
+
+**Example output:**
+```
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  COMMON LOCAL PORTS - AVOID THESE TO PREVENT CONFLICTS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Total Projects Scanned: 24
+Total Unique Ports: 18
+
+Ports in Use:
+
+  Port 3000  - Web Server           (frontend, api, admin)
+  Port 3001  - API Server            (backend)
+  Port 5432  - Database              (postgres)
+  ...
+```
+
+### `ports index <directory>`
+
+Scan a specific directory for ports and URLs. Uses Claude Code CLI if available, otherwise falls back to built-in scanner.
+
+```bash
+# Index a directory
+ports index /path/to/project
+
+# Save output to file
+ports index /path/to/project --output results.json
 ```
 
 ## Keyboard Shortcuts

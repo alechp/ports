@@ -1,18 +1,8 @@
 #!/usr/bin/env bun
-import React from 'react';
-import { render } from 'ink';
-import { PortsScanner } from './src/components/PortsScanner';
 
-console.clear();
-const app = render(<PortsScanner />);
+// This file is deprecated. Use cli.tsx instead.
+// For backward compatibility, we'll just run the TUI command.
 
-// Handle graceful shutdown
-process.on('SIGINT', () => {
-  app.unmount();
-  process.exit(0);
-});
+import { renderTUI } from './src/commands/tui';
 
-process.on('SIGTERM', () => {
-  app.unmount();
-  process.exit(0);
-});
+renderTUI();

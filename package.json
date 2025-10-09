@@ -1,6 +1,35 @@
 {
-  "name": "ports",
-  "module": "index.tsx",
+  "name": "@alechp/ports",
+  "version": "1.0.0",
+  "description": "Port & URL Scanner - Interactive TUI for scanning and managing ports and URLs across projects",
+  "module": "cli.tsx",
+  "bin": {
+    "ports": "./cli.tsx"
+  },
+  "scripts": {
+    "start": "bun run cli.tsx",
+    "dev": "bun run cli.tsx tui",
+    "test": "bun run test-scanner.ts"
+  },
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alechp/ports.git"
+  },
+  "keywords": [
+    "ports",
+    "scanner",
+    "tui",
+    "cli",
+    "urls",
+    "development"
+  ],
+  "author": "alechp",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/alechp/ports/issues"
+  },
+  "homepage": "https://github.com/alechp/ports#readme",
   "devDependencies": {
     "@types/bun": "latest",
     "@types/react": "^19.2.1"
@@ -8,14 +37,9 @@
   "peerDependencies": {
     "typescript": "^5"
   },
-  "private": true,
-  "scripts": {
-    "start": "bun run index.tsx",
-    "test": "bun run test-scanner.ts"
-  },
-  "type": "module",
   "dependencies": {
     "chalk": "^5.6.2",
+    "commander": "^14.0.1",
     "ink": "^6.3.1",
     "ink-select-input": "^6.2.0",
     "ink-text-input": "^6.0.0",
