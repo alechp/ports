@@ -33,6 +33,7 @@ export const HelpModal: React.FC = () => {
           <Text><Text color="green">Enter</Text>         Focus on selected project</Text>
           <Text><Text color="green">Space</Text>         Toggle expand/collapse</Text>
           <Text><Text color="green">/</Text>             Open search box</Text>
+          <Text><Text color="green">p</Text>             Manage scan paths</Text>
           <Text><Text color="green">x</Text>             Collapse all projects</Text>
           <Text><Text color="green">X</Text>             Expand all projects</Text>
           <Text><Text color="green">Esc</Text>           Cancel search</Text>

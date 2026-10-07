@@ -6,12 +6,9 @@ import { ProjectTable } from './ProjectTable';
 import { SearchInput } from './SearchInput';
 import { FocusedCardView } from './FocusedCardView';
 import { HelpModal } from './HelpModal';
-import { resolve } from 'path';
+import { PathManager } from './PathManager';
+import { loadConfig } from '../config';
 import { exec, spawn } from 'child_process';
-
-// Calculate paths relative to the project directory
-const YAPTURE_PATH = resolve(process.cwd(), '../../yapture');
-const STUDIO_PATH = resolve(process.cwd(), '../../studio');
 
 export const PortsScanner: React.FC = () => {
   const [allProjects, setAllProjects] = useState<ProjectInfo[]>([]);
@@ -27,9 +24,11 @@ export const PortsScanner: React.FC = () => {
   const [urlScrollIndex, setUrlScrollIndex] = useState(0);
   const [portScrollIndex, setPortScrollIndex] = useState(0);
   const [showHelp, setShowHelp] = useState(false);
+  const [showPathManager, setShowPathManager] = useState(false);
   const [focusedSection, setFocusedSection] = useState<'ports' | 'urls'>('ports');
   const [lastGPress, setLastGPress] = useState<number>(0);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [scanPaths, setScanPaths] = useState<string[]>([]);
 
   // Helper function to copy to clipboard
   const copyToClipboard = (text: string, label: string) => {
@@ -40,11 +39,20 @@ export const PortsScanner: React.FC = () => {
     setTimeout(() => setToastMessage(null), 2000);
   };
 
-  // Load projects on mount
+  // Load scan paths and projects on mount
   useEffect(() => {
+    const config = loadConfig();
+    setScanPaths(config.scanPaths);
+  }, []);
+
+  // Load projects when scan paths change
+  useEffect(() => {
+    if (scanPaths.length === 0) return;
+
     const loadProjects = async () => {
+      setLoading(true);
       try {
-        const projects = await scanAllProjects([YAPTURE_PATH, STUDIO_PATH]);
+        const projects = await scanAllProjects(scanPaths);
         setAllProjects(projects);
         setFilteredProjects(projects);
         setLoading(false);
@@ -55,7 +63,13 @@ export const PortsScanner: React.FC = () => {
     };
 
     loadProjects();
-  }, []);
+  }, [scanPaths]);
+
+  // Reload projects when paths are changed
+  const reloadProjects = () => {
+    const config = loadConfig();
+    setScanPaths(config.scanPaths);
+  };
 
   // Filter projects based on search query
   useEffect(() => {
@@ -78,13 +92,19 @@ export const PortsScanner: React.FC = () => {
   // Keyboard navigation
   useInput((input, key) => {
     // Global quit
-    if (input === 'q' && !searchMode && focusedProject === null) {
+    if (input === 'q' && !searchMode && focusedProject === null && !showPathManager) {
       process.exit(0);
     }
 
     // Help modal handler (works in all modes)
-    if (input === '?' && !searchMode) {
+    if (input === '?' && !searchMode && !showPathManager) {
       setShowHelp(prev => !prev);
+      return;
+    }
+
+    // Path manager handler (works when not in search mode or focused view)
+    if (input === 'p' && !searchMode && focusedProject === null && !showPathManager) {
+      setShowPathManager(true);
       return;
     }
 
@@ -384,6 +404,16 @@ export const PortsScanner: React.FC = () => {
     }
   });
 
+  // If path manager is shown, render it
+  if (showPathManager) {
+    return (
+      <PathManager
+        onExit={() => setShowPathManager(false)}
+        onPathsChanged={reloadProjects}
+      />
+    );
+  }
+
   if (loading) {
     return (
       <Box
@@ -398,7 +428,9 @@ export const PortsScanner: React.FC = () => {
         <Text bold color="cyan">
           Loading projects...
         </Text>
-        <Text color="gray">Scanning yapture/* and studio/*</Text>
+        <Text color="gray">
+          Scanning {scanPaths.length} path{scanPaths.length !== 1 ? 's' : ''}...
+        </Text>
       </Box>
     );
   }
@@ -473,7 +505,7 @@ export const PortsScanner: React.FC = () => {
         </Text>
         <Text color="gray"> - </Text>
         <Text color="gray">
-          / search, hjkl navigate, Enter focus, ? help, q quit
+          / search, hjkl navigate, Enter focus, p paths, ? help, q quit
         </Text>
       </Box>
 
